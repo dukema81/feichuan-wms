@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>飞传 WMS · 登录</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-left">
+      <div class="lg">飞传 WMS</div>
+      <div class="sub">收货 · 上架 · 分配 · 拣货 · 复核 · 发运 · 盘点 · 集成</div>
+      <ul>
+        <li>入库四道闸口：预约、到货、收货、质检、上架，超收容差自动拦截</li>
+        <li>出库全链路：库存分配（FEFO/FIFO/LIFO）→ 波次 → 拣货 → 复核 → 发运</li>
+        <li>批次与效期管理：临期分级、呆滞识别、正反向追溯</li>
+        <li>库内作业：循环盘点、差异调整、拣货面补货、库内移库</li>
+        <li>开放接口：API Key / Webhook / 增量同步，与 ERP、MES、TMS 对接</li>
+      </ul>
+      <div class="spacer"></div>
+      <div class="sub" style="font-size:11.5px">feichuan-wms v1.0.0 · 演示数据为确定性生成</div>
+    </div>
+    <div class="login-right">
+      <h2>账号登录</h2>
+      <div class="hint">请输入企业账号与密码</div>
+      <div class="field">
+        <label>账号</label>
+        <input id="u" type="text" placeholder="如 admin" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>密码</label>
+        <input id="p" type="password" placeholder="请输入密码" autocomplete="current-password">
+      </div>
+      <button class="btn primary" id="btn">登 录</button>
+      <div class="login-err" id="err"></div>
+      <div class="login-demo">
+        演示账号：admin / admin123（系统管理员）<br>
+        qianwei 仓储经理 · liyun 收货员 · zhaolei 拣货员 · sunqi 发运员 · zhouhang 库存管理员 · wuping 盘点审核 · chenmo 只读（密码 wh@2026）
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var u = document.getElementById("u");
+  var p = document.getElementById("p");
+  var btn = document.getElementById("btn");
+  var err = document.getElementById("err");
+  if (localStorage.getItem("wms_token")) location.href = "./index.html";
+
+  function login() {
+    err.textContent = "";
+    var username = (u.value || "").trim();
+    var password = p.value || "";
+    if (!username || !password) { err.textContent = "请输入账号和密码"; return; }
+    btn.disabled = true;
+    btn.textContent = "登录中…";
+    fetch("api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, password: password })
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+    }).then(function (x) {
+      if (!x.ok || x.j.error) {
+        err.textContent = (x.j && x.j.error) || "登录失败";
+        return;
+      }
+      var d = x.j.data;
+      localStorage.setItem("wms_token", d.token);
+      localStorage.setItem("fc_user", d.username);
+      localStorage.setItem("fc_name", d.displayName);
+      localStorage.setItem("fc_role", d.role);
+      localStorage.setItem("fc_role_label", d.roleLabel);
+      // 同时落一份 Cookie：部分反向代理会改写 Authorization 头，Cookie 作为兜底票据
+      document.cookie = "wms_token=" + d.token + "; path=/; max-age=86400; samesite=lax";
+      location.href = "./index.html";
+    }).catch(function () {
+      err.textContent = "网络异常，请稍后重试";
+    }).then(function () {
+      btn.disabled = false;
+      btn.textContent = "登 录";
+    });
+  }
+
+  btn.addEventListener("click", login);
+  p.addEventListener("keydown", function (e) { if (e.key === "Enter") login(); });
+  u.addEventListener("keydown", function (e) { if (e.key === "Enter") p.focus(); });
+  u.focus();
+})();
+</script>
+</body>
+</html>
