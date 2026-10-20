@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+*.db-wal
+*.db-shm
+*.log
+reports/screenshots/
+backend/data/
+node_modules/
+.DS_Store
