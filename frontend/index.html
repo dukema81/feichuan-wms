@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>飞传 WMS · Feichuan WMS</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="titlebar">
+    <div class="brand">
+      <div class="logo">传</div>
+      <div>
+        <div class="co">飞传供应链科技（苏州）有限公司</div>
+        <div class="sys">飞传 WMS · 仓储执行系统</div>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="ver" id="verNo">feichuan-wms-1.0.0</div>
+    <span class="opuser link-out" id="btnLogout" title="退出登录" style="cursor:pointer">退出</span>
+    <div class="winbtns"><span>—</span><span>□</span><span class="close">×</span></div>
+  </header>
+
+  <nav class="menubar" id="menubar"></nav>
+
+  <div class="body">
+    <aside class="tree">
+      <div class="tree-title"><span style="color:var(--accent2)">■</span> 功能导航</div>
+      <div id="tree"></div>
+    </aside>
+
+    <section class="workspace">
+      <div class="tabstrip" id="tabstrip"></div>
+      <div class="page" id="view"></div>
+    </section>
+
+    <aside class="side" id="side"></aside>
+  </div>
+
+  <footer class="statusbar">
+    <span id="statusMsg">就绪</span>
+    <span class="spacer"></span>
+    <span>仓库：<b>WH-SZ01 苏州中心仓</b></span>
+    <span id="skuLabel">在库 SKU：—</span>
+    <span id="pickLabel">待拣任务：—</span>
+    <span id="utilLabel">库容：—</span>
+    <span id="opFoot">操作员：—</span>
+  </footer>
+</div>
+
+<div class="mask" id="mask"><div class="dialog" id="dialog"></div></div>
+
+<script src="app.js"></script>
+<script src="inbound.js"></script>
+<script src="outbound.js"></script>
+<script src="stock.js"></script>
+<script src="trace.js"></script>
+<script src="mdm.js"></script>
+<script src="report.js"></script>
+</body>
+</html>
